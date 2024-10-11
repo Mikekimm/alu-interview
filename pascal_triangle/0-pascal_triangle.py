@@ -1,30 +1,38 @@
 #!/usr/bin/python3
-"""Fabric script that distributes an archive to your web servers"""
-from fabric.api import env, put, run
-from os.path import exists
-
-env.hosts = ['54.242.133.62', '34.233.128.212']
-env.user = "ubuntu"
-env.key = "~/.ssh/id_rsa"
+"""
+Pascal's Triangle
+"""
 
 
-def do_deploy(archive_path):
-    """Function to distribute an archive to your web servers"""
-    if not exists(archive_path):
-        return False
-    try:
-        file_name = archive_path.split("/")[-1]
-        name = file_name.split(".")[0]
-        path_name = "/data/web_static/releases/" + name
-        put(archive_path, "/tmp/")
-        run("mkdir -p {}/".format(path_name))
-        run('tar -xzf /tmp/{} -C {}/'.format(file_name, path_name))
-        run("rm /tmp/{}".format(file_name))
-        run("mv {}/web_static/* {}".format(path_name, path_name))
-        run("rm -rf {}/web_static".format(path_name))
-        run('rm -rf /data/web_static/current')
-        run('ln -s {}/ /data/web_static/current'.format(path_name))
-        return True
-    except Exception:
-        return False
+def pascal_triangle(n):
+    """
+    A function def pascal_triangle(n):
+    that return a list of integers representing the Pascal's triangle of n
+    """
+    # Return an empty list if n is less than or equal to 0
+    if n <= 0:
+        return []
+    # Initialize the triangle with the first row
+    triangle = [[1]]
+
+    # Loop through the remaining elements in the row
+    for i in range(1, n):
+        # Initialize a new row with the first element
+        row = [1]
+
+        # Loop through the remaining elements in the row
+        for j in range(1, i):
+            # Compute the value of current element using the values
+            # from previous row
+            value = triangle[i - 1][j - 1] + triangle[i - 1][j]
+            row.append(value)
+
+        # Add the last element of the row as 1
+        row.append(1)
+
+        # Append the new row to the triangle
+        triangle.append(row)
+
+    # Return the complete triangle
+    return triangle
 
